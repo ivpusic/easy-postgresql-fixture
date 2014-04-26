@@ -10,7 +10,7 @@ var fixture = require('easy-fixture');
 var PostgresFixture = require('easy-postgresql-fixture');
 
 var postgresFixtrue = new PostgresFixture({
-	database: 'test',
+  database: 'test',
   dir: './fixtures',
   out: 'fixtures.sql'
 });
