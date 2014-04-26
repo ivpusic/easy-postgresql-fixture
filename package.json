@@ -1,6 +1,6 @@
 {
   "name": "easy-postgresql-fixture",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Postgresql fixture manager for easy-fixture",
   "main": "index.js",
   "directories": {
