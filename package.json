@@ -1,34 +1,36 @@
 {
-  "name": "easy-mongo-fixture",
-  "version": "1.0.4",
-  "description": "",
+  "name": "easy-postgresql-fixture",
+  "version": "0.0.0",
+  "description": "Postgresql fixture manager for easy-fixture",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "easy-fixture": "~1.0.0",
+    "mongodb": "~1.4.2",
+    "q": "~1.0.1",
+    "should": "~3.3.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.18.2"
+  },
   "scripts": {
-    "test": "make test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ivpusic/easy-mongo-fixture.git"
+    "url": "git@github.com:ivpusic/easy-postgresql-fixture.git"
   },
   "keywords": [
     "easy",
-    "mongo",
-    "fixture"
+    "fixture",
+    "postgresql"
   ],
   "author": "Ivan Pusic",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ivpusic/easy-mongo-fixture/issues"
+    "url": "https://github.com/ivpusic/easy-postgresql-fixture/issues"
   },
-  "homepage": "https://github.com/ivpusic/easy-mongo-fixture",
-  "dependencies": {
-    "q": "~1.0.1",
-    "easy-fixture": "*",
-    "mongodb": "~1.4.2"
-  },
-  "devDependencies": {
-    "mocha": "~1.18.2",
-    "should": "~3.3.1",
-    "mongodb": "~1.4.2"
-  }
+  "homepage": "https://github.com/ivpusic/easy-postgresql-fixture"
 }
