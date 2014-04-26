@@ -1,0 +1,31 @@
+{
+  "name": "easy-postgresql-fixture",
+  "version": "0.0.0",
+  "description": "Postgresql fixture manager for easy-fixture",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ivpusic/easy-postgresql-fixture.git"
+  },
+  "keywords": [
+    "easy",
+    "fixture",
+    "postgresql"
+  ],
+  "author": "Ivan Pusic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivpusic/easy-postgresql-fixture/issues"
+  },
+  "homepage": "https://github.com/ivpusic/easy-postgresql-fixture",
+  "dependencies": {
+    "easy-fixture": "~1.0.0",
+    "q": "~1.0.1"
+  }
+}
