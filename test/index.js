@@ -32,8 +32,8 @@ describe('easy-postgres-fixture', function () {
     });
 
     it('should be able to work without Users and Roles tables', function (done) {
-      Q.ninvoke(pgClient, 'query', 'DROP TABLE "Users"').then(function () {
-        Q.ninvoke(pgClient, 'query', 'DROP TABLE "Roles"').then(function () {
+      Q.ninvoke(pgClient, 'query', 'DROP TABLE IF EXISTS "Users"').then(function () {
+        Q.ninvoke(pgClient, 'query', 'DROP TABLE IF EXISTS "Roles"').then(function () {
           done();
         }).fail(done).done();
       }).fail(done).done();
@@ -97,8 +97,8 @@ describe('easy-postgres-fixture', function () {
     });
 
     it('should be able to work without Users and Roles tables', function (done) {
-      Q.ninvoke(pgClient, 'query', 'DROP TABLE "Users"').then(function () {
-        Q.ninvoke(pgClient, 'query', 'DROP TABLE "Roles"').then(function () {
+      Q.ninvoke(pgClient, 'query', 'DROP TABLE IF EXISTS "Users"').then(function () {
+        Q.ninvoke(pgClient, 'query', 'DROP TABLE IF EXISTS "Roles"').then(function () {
           done();
         }).fail(done).done();
       }).fail(done).done();
