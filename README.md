@@ -1,5 +1,6 @@
 easy-postgresql-fixture
 ==================
+[![Build Status](https://travis-ci.org/ivpusic/easy-postgresql-fixture.svg?branch=master)](https://travis-ci.org/ivpusic/easy-postgresql-fixture)
 
 Postgresql fixture manager for [easy-fixture](https://github.com/ivpusic/easy-fixture) lib.
 
