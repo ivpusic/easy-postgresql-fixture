@@ -13,7 +13,8 @@
     "should": "~3.3.1"
   },
   "devDependencies": {
-    "mocha": "~1.18.2"
+    "mocha": "~1.18.2",
+    "pg": "~3.0.3"
   },
   "scripts": {
     "test": "mocha"

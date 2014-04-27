@@ -1,108 +1,131 @@
 'use strict';
 
 var fixture = require('easy-fixture'),
-  MongoFixture = require('..'),
-  MongoClient = require('mongodb').MongoClient,
+  PostgresFixture = require('..'),
+  pg = require('pg'),
   Q = require('q'),
   fs = require('fs'),
   path = require('path');
 
-describe('easy-fixture', function () {
-  var mongoFixture;
+var postgresFixture,
+  connectionString = 'pg://postgres:@localhost/travis_ci_test',
+  pgClient;
 
-  beforeEach(function () {
-    mongoFixture = new MongoFixture({
-      database: 'test',
-      collections: ['products', 'categories'],
-      dir: 'test/fixtures',
-      override: true
-    });
-
-    fixture.use(mongoFixture);
+before(function () {
+  postgresFixture = new PostgresFixture({
+    database: 'travis_ci_test',
+    dir: 'test/fixtures',
+    out: 'fixtures.sql'
   });
 
+  fixture.use(postgresFixture);
+});
+
+describe('easy-postgres-fixture', function () {
   describe('load', function () {
-    it('should load fixtures from file into database', function (done) {
+
+    before(function (done) {
+      pgClient = new pg.Client(connectionString);
+      return Q.ninvoke(pgClient, 'connect').then(function (res) {
+        done();
+      }).fail(done).done();
+    });
+
+    it('should be able to work without Users and Roles tables', function (done) {
+      Q.ninvoke(pgClient, 'query', 'DROP TABLE "Users"').then(function () {
+        Q.ninvoke(pgClient, 'query', 'DROP TABLE "Roles"').then(function () {
+          done();
+        }).fail(done).done();
+      }).fail(done).done();
+    });
+
+    it('should be able to read data from local file and save it into database', function (done) {
       fixture.load().then(function () {
         done();
-      }).fail(done)
-        .done();
+      }).fail(done).done();
     });
 
-    it('will make able to read imported products records', function (done) {
-      Q.ninvoke(MongoClient, 'connect', 'mongodb://127.0.0.1:27017/test').then(function (db) {
-        var products = db.collection('products');
-
-        Q.ninvoke(products.find(), 'toArray').then(function (res) {
-          if (res.length === 23) {
+    describe('after', function () {
+      it('should be able to read Users records from database after fixtures are loaded', function (done) {
+        Q.ninvoke(pgClient, 'query', 'SELECT COUNT(*) FROM "Users";').then(function (res) {
+          if (parseInt(res.rows[0].count) === 1) {
             done();
-          } else {
-            done('Results not returned!');
           }
-        });
-      }).fail(done)
-        .done();
-    });
+        }).fail(done).done();
+      });
 
-    it('will make able to read imported categories records', function (done) {
-      Q.ninvoke(MongoClient, 'connect', 'mongodb://127.0.0.1:27017/test').then(function (db) {
-        var categories = db.collection('categories');
-
-        Q.ninvoke(categories.find(), 'toArray').then(function (res) {
-          if (res.length === 63) {
+      it('should be able to read Roles records from database after fixtures are loaded', function (done) {
+        Q.ninvoke(pgClient, 'query', 'SELECT COUNT(*) FROM "Roles";').then(function (res) {
+          if (parseInt(res.rows[0].count) === 3) {
             done();
-          } else {
-            done('Results not returned!');
           }
-        });
-      }).fail(done)
-        .done();
+        }).fail(done).done();
+      });
     });
   });
 
   describe('save', function () {
+    before(function (done) {
+      fs.unlinkSync(path.join(__dirname, 'fixtures', 'fixtures.sql'));
 
-    before(function () {
-      fs.unlinkSync(path.join(__dirname, 'fixtures', 'products.json'));
-      fs.unlinkSync(path.join(__dirname, 'fixtures', 'categories.json'));
+      pgClient = new pg.Client(connectionString);
+      return Q.ninvoke(pgClient, 'connect').then(function (res) {
+        done();
+      }).fail(done).done();
     });
 
-    it('should be able to work without local fixture data. It should be able to reload data from database', function (done) {
-      var existProducts = fs.existsSync(path.join(__dirname, 'fixtures', 'products.json'));
-      var existCategories = fs.existsSync(path.join(__dirname, 'fixtures', 'categories.json'));
+    it('should be able to work without local fixtures file', function (done) {
+      var exist = fs.existsSync(path.join(__dirname, 'fixtures', 'fixtures.sql'));
 
-      if (!existCategories && !existProducts) {
+      if (!exist) {
         done();
       } else {
-        done('Cannot clean fixture files!');
+        done('Local file exists!');
       }
     });
 
-    it('should collect data from database and save it to local file', function (done) {
+    it('should be able to collect data from database and save it into local file', function (done) {
       fixture.save().then(function () {
-        done();
-      }).fail(done)
-        .done();
+        var exist = fs.existsSync(path.join(__dirname, 'fixtures', 'fixtures.sql'));
+
+        if (exist) {
+          done();
+        } else {
+          done('File fixtures/fixtures.sql does not exist!');
+        }
+      }).fail(done).done();
     });
 
-    it('should save collection product to local products.json file', function (done) {
-      var exist = fs.existsSync(path.join(__dirname, 'fixtures', 'products.json'));
-
-      if (exist) {
-        done();
-      } else {
-        done('Cannot find products.json file. Is it exported?');
-      }
+    it('should be able to work without Users and Roles tables', function (done) {
+      Q.ninvoke(pgClient, 'query', 'DROP TABLE "Users"').then(function () {
+        Q.ninvoke(pgClient, 'query', 'DROP TABLE "Roles"').then(function () {
+          done();
+        }).fail(done).done();
+      }).fail(done).done();
     });
 
-    it('should save collection product to local categories.json file', function (done) {
-      var exist = fs.existsSync(path.join(__dirname, 'fixtures', 'categories.json'));
-
-      if (exist) {
+    it('should be able to read data from local file and save it into database', function (done) {
+      fixture.load().then(function () {
         done();
-      } else {
-        done('Cannot find categories.json file. Is it exported?');
-      }
+      }).fail(done).done();
+    });
+
+    describe('after', function () {
+      it('should be able to read Users records from database after fixtures are loaded', function (done) {
+        Q.ninvoke(pgClient, 'query', 'SELECT COUNT(*) FROM "Users";').then(function (res) {
+          if (parseInt(res.rows[0].count) === 1) {
+            done();
+          }
+        }).fail(done).done();
+      });
+
+      it('should be able to read Roles records from database after fixtures are loaded', function (done) {
+        Q.ninvoke(pgClient, 'query', 'SELECT COUNT(*) FROM "Roles";').then(function (res) {
+          if (parseInt(res.rows[0].count) === 3) {
+            done();
+          }
+        }).fail(done).done();
+      });
     });
   });
 });
